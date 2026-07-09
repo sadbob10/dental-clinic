@@ -1,0 +1,1 @@
+-- Baseline migration. Schema tables will be added per feature.
