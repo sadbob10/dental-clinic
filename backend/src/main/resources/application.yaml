@@ -25,3 +25,9 @@ application:
 
 server:
   port: 8002
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  default-flat-param-object: true
