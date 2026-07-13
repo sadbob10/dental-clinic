@@ -63,7 +63,7 @@ public class AppointmentController {
                 appointmentService.getAll(dentistId, patientId, status, date, pageable)
         );
     }
-    
+
     @GetMapping("/today")
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST', 'DENTIST')")
     @Operation(summary = "Get today's appointments")
