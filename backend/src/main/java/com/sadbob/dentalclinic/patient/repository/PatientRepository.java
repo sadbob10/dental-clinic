@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -28,4 +29,19 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     Page<Patient> searchPatients(@Param("search") String search, Pageable pageable);
 
     Page<Patient> findAllByDeletedFalse(Pageable pageable);
+
+    // Total active patients
+    long countByDeletedFalse();
+
+    // New patients registered in date range
+    @Query("""
+        SELECT COUNT(p) FROM Patient p
+        WHERE p.deleted = false
+        AND p.createdAt >= :from
+        AND p.createdAt <= :to
+        """)
+    long countNewPatientsByDateRange(
+            @Param("from") LocalDateTime from,
+            @Param("to")   LocalDateTime to
+    );
 }

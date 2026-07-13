@@ -66,4 +66,43 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("endTime")    LocalDateTime endTime,
             @Param("excludeId")  Long excludeId
     );
+
+    // Count appointments by status in date range
+    @Query("""
+        SELECT COUNT(a) FROM Appointment a
+        WHERE a.deleted = false
+        AND a.scheduledAt >= :from
+        AND a.scheduledAt <= :to
+        AND a.status = :status
+        """)
+    long countByStatusAndDateRange(
+            @Param("status") AppointmentStatus status,
+            @Param("from")   LocalDateTime from,
+            @Param("to")     LocalDateTime to
+    );
+
+    // Count appointments by type in date range
+    @Query("""
+        SELECT a.type, COUNT(a) FROM Appointment a
+        WHERE a.deleted = false
+        AND a.scheduledAt >= :from
+        AND a.scheduledAt <= :to
+        GROUP BY a.type
+        """)
+    List<Object[]> countByTypeAndDateRange(
+            @Param("from") LocalDateTime from,
+            @Param("to")   LocalDateTime to
+    );
+
+    // Total appointments in date range
+    @Query("""
+        SELECT COUNT(a) FROM Appointment a
+        WHERE a.deleted = false
+        AND a.scheduledAt >= :from
+        AND a.scheduledAt <= :to
+        """)
+    long countByDateRange(
+            @Param("from") LocalDateTime from,
+            @Param("to")   LocalDateTime to
+    );
 }
