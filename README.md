@@ -29,14 +29,14 @@ Modular monolith, Clean Architecture, REST API-first. One Spring Boot applicatio
 **Phase 1 — Web Admin Panel (MVP):** in progress
 **Phase 2 — Mobile Patient App:** not started
 
-| Step | Status |
-|---|---|
-| Project Scaffold | ✅ Done |
-| Authentication & JWT | ⏳ Next |
-| Patient Management | Not started |
-| Appointment Management | Not started |
-| Treatment Records | Not started |
-| Billing | Not started |
+| Step | Status      |
+|---|-------------|
+| Project Scaffold | Done        |
+| Authentication & JWT | Done        |
+| Patient Management | Done        |
+| Appointment Management | Done        |
+| Treatment Records | Done        |
+| Billing | started |
 | Reports | Not started |
 
 ## Local Development
@@ -52,4 +52,4 @@ cd backend && ./mvnw spring-boot:run
 cd frontend && npm install && npm run dev
 ```
 
-Backend: `http://localhost:8080` · Swagger: `http://localhost:8080/swagger-ui.html` · Frontend: `http://localhost:5173`
+Backend: `http://localhost:8002` · Swagger: `http://localhost:8002/swagger-ui.html` · Frontend: `http://localhost:5173`
