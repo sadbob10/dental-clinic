@@ -105,4 +105,66 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("from") LocalDateTime from,
             @Param("to")   LocalDateTime to
     );
+
+    // Count appointments for a dentist in a date range (for monthly stats)
+    @Query("""
+        SELECT COUNT(a) FROM Appointment a
+        WHERE a.deleted = false
+        AND a.dentist.id = :dentistId
+        AND a.scheduledAt >= :from
+        AND a.scheduledAt <= :to
+        """)
+    long countByDentistAndDateRange(
+            @Param("dentistId") Long dentistId,
+            @Param("from")      LocalDateTime from,
+            @Param("to")        LocalDateTime to
+    );
+
+    // Today's appointments for a specific dentist
+    @Query("""
+        SELECT a FROM Appointment a
+        WHERE a.deleted = false
+        AND a.dentist.id = :dentistId
+        AND a.scheduledAt >= :startOfDay
+        AND a.scheduledAt <= :endOfDay
+        ORDER BY a.scheduledAt ASC
+        """)
+    List<Appointment> findTodayAppointmentsByDentist(
+            @Param("dentistId")   Long dentistId,
+            @Param("startOfDay")  LocalDateTime startOfDay,
+            @Param("endOfDay")    LocalDateTime endOfDay
+    );
+
+    // Next upcoming appointment for a dentist
+    @Query("""
+        SELECT a FROM Appointment a
+        WHERE a.deleted = false
+        AND a.dentist.id = :dentistId
+        AND a.scheduledAt > :now
+        AND a.status NOT IN (
+            com.sadbob.dentalclinic.appointment.enums.AppointmentStatus.CANCELLED,
+            com.sadbob.dentalclinic.appointment.enums.AppointmentStatus.NO_SHOW
+        )
+        ORDER BY a.scheduledAt ASC
+        """)
+    List<Appointment> findNextAppointmentByDentist(
+            @Param("dentistId") Long dentistId,
+            @Param("now")       LocalDateTime now,
+            org.springframework.data.domain.Pageable pageable
+    );
+
+    // Count completed appointments for a dentist today
+    @Query("""
+        SELECT COUNT(a) FROM Appointment a
+        WHERE a.deleted = false
+        AND a.dentist.id = :dentistId
+        AND a.status = com.sadbob.dentalclinic.appointment.enums.AppointmentStatus.COMPLETED
+        AND a.scheduledAt >= :startOfDay
+        AND a.scheduledAt <= :endOfDay
+        """)
+    long countCompletedTodayByDentist(
+            @Param("dentistId")  Long dentistId,
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay")   LocalDateTime endOfDay
+    );
 }

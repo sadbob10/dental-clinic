@@ -44,4 +44,16 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             @Param("from") LocalDateTime from,
             @Param("to")   LocalDateTime to
     );
+
+    // Count new patients registered today
+    @Query("""
+        SELECT COUNT(p) FROM Patient p
+        WHERE p.deleted = false
+        AND p.createdAt >= :startOfDay
+        AND p.createdAt <= :endOfDay
+        """)
+    long countNewPatientsToday(
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay")   LocalDateTime endOfDay
+    );
 }

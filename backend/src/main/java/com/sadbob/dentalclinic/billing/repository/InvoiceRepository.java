@@ -66,4 +66,20 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
             @Param("from") LocalDateTime from,
             @Param("to")   LocalDateTime to
     );
+
+    // Count invoices with specific statuses (for pending count)
+    @Query("""
+        SELECT COUNT(i) FROM Invoice i
+        WHERE i.status IN :statuses
+        """)
+    long countByStatusIn(@Param("statuses") List<InvoiceStatus> statuses);
+
+    // Sum outstanding amount (issued + partially paid)
+    @Query("""
+        SELECT COALESCE(SUM(i.netAmount), 0) FROM Invoice i
+        WHERE i.status IN :statuses
+        """)
+    BigDecimal sumNetAmountByStatusIn(
+            @Param("statuses") List<InvoiceStatus> statuses
+    );
 }
