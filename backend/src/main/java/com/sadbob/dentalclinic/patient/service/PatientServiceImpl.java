@@ -1,5 +1,11 @@
 package com.sadbob.dentalclinic.patient.service;
 
+import com.sadbob.dentalclinic.appointment.dto.AppointmentSummary;
+import com.sadbob.dentalclinic.appointment.mapper.AppointmentMapper;
+import com.sadbob.dentalclinic.appointment.repository.AppointmentRepository;
+import com.sadbob.dentalclinic.billing.dto.InvoiceSummary;
+import com.sadbob.dentalclinic.billing.mapper.InvoiceMapper;
+import com.sadbob.dentalclinic.billing.repository.InvoiceRepository;
 import com.sadbob.dentalclinic.patient.dto.PatientRequest;
 import com.sadbob.dentalclinic.patient.dto.PatientResponse;
 import com.sadbob.dentalclinic.patient.dto.PatientSummary;
@@ -14,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,6 +29,10 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final PatientMapper patientMapper;
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMapper appointmentMapper;
+    private final InvoiceRepository invoiceRepository;
+    private final InvoiceMapper invoiceMapper;
 
     @Override
     @Transactional
@@ -98,5 +110,44 @@ public class PatientServiceImpl implements PatientService {
         patientRepository.save(patient);
 
         log.info("Patient soft-deleted: id={}, name={}", patient.getId(), patient.getFullName());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PatientResponse getByPhone(String phone) {
+        Patient patient = patientRepository.findByPhoneAndDeletedFalse(phone)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Patient not found with phone: " + phone));
+        return patientMapper.toResponse(patient);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AppointmentSummary> getPatientAppointments(Long patientId) {
+        patientRepository.findByIdAndDeletedFalse(patientId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Patient not found with id: " + patientId));
+
+        return appointmentRepository
+                .findByDeletedFalseAndPatient_Id(patientId,
+                        org.springframework.data.domain.PageRequest.of(0, 100))
+                .stream()
+                .sorted((a, b) -> b.getScheduledAt().compareTo(a.getScheduledAt()))
+                .map(appointmentMapper::toSummary)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<InvoiceSummary> getPatientInvoices(Long patientId) {
+        patientRepository.findByIdAndDeletedFalse(patientId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Patient not found with id: " + patientId));
+
+        return invoiceRepository
+                .findByPatient_IdOrderByCreatedAtDesc(patientId)
+                .stream()
+                .map(invoiceMapper::toSummary)
+                .toList();
     }
 }

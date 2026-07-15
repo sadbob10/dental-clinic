@@ -1,5 +1,7 @@
 package com.sadbob.dentalclinic.patient.controller;
 
+import com.sadbob.dentalclinic.appointment.dto.AppointmentSummary;
+import com.sadbob.dentalclinic.billing.dto.InvoiceSummary;
 import com.sadbob.dentalclinic.patient.dto.PatientRequest;
 import com.sadbob.dentalclinic.patient.dto.PatientResponse;
 import com.sadbob.dentalclinic.patient.dto.PatientSummary;
@@ -18,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -74,5 +78,32 @@ public class PatientController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         patientService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST', 'DENTIST')")
+    @Operation(summary = "Quick patient lookup by exact phone number")
+    public ResponseEntity<PatientResponse> getByPhone(
+            @RequestParam String phone
+    ) {
+        return ResponseEntity.ok(patientService.getByPhone(phone));
+    }
+
+    @GetMapping("/{id}/appointments")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST', 'DENTIST')")
+    @Operation(summary = "Get all appointments for a patient")
+    public ResponseEntity<List<AppointmentSummary>> getPatientAppointments(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(patientService.getPatientAppointments(id));
+    }
+
+    @GetMapping("/{id}/invoices")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST', 'DENTIST')")
+    @Operation(summary = "Get all invoices for a patient")
+    public ResponseEntity<List<InvoiceSummary>> getPatientInvoices(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(patientService.getPatientInvoices(id));
     }
 }

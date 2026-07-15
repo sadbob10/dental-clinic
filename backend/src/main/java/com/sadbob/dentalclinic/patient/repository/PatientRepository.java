@@ -18,6 +18,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     boolean existsByPhoneAndDeletedFalse(String phone);
 
+    Optional<Patient> findByPhoneAndDeletedFalse(String phone);
+
     @Query("""
             SELECT p FROM Patient p
             WHERE p.deleted = false
@@ -30,28 +32,25 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Page<Patient> findAllByDeletedFalse(Pageable pageable);
 
-    // Total active patients
     long countByDeletedFalse();
 
-    // New patients registered in date range
     @Query("""
-        SELECT COUNT(p) FROM Patient p
-        WHERE p.deleted = false
-        AND p.createdAt >= :from
-        AND p.createdAt <= :to
-        """)
+            SELECT COUNT(p) FROM Patient p
+            WHERE p.deleted = false
+            AND p.createdAt >= :from
+            AND p.createdAt <= :to
+            """)
     long countNewPatientsByDateRange(
             @Param("from") LocalDateTime from,
             @Param("to")   LocalDateTime to
     );
 
-    // Count new patients registered today
     @Query("""
-        SELECT COUNT(p) FROM Patient p
-        WHERE p.deleted = false
-        AND p.createdAt >= :startOfDay
-        AND p.createdAt <= :endOfDay
-        """)
+            SELECT COUNT(p) FROM Patient p
+            WHERE p.deleted = false
+            AND p.createdAt >= :startOfDay
+            AND p.createdAt <= :endOfDay
+            """)
     long countNewPatientsToday(
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay")   LocalDateTime endOfDay

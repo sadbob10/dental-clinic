@@ -29,15 +29,15 @@ Modular monolith, Clean Architecture, REST API-first. One Spring Boot applicatio
 **Phase 1 — Web Admin Panel (MVP):** in progress
 **Phase 2 — Mobile Patient App:** not started
 
-| Step | Status      |
-|---|-------------|
-| Project Scaffold | Done        |
-| Authentication & JWT | Done        |
-| Patient Management | Done        |
-| Appointment Management | Done        |
-| Treatment Records | Done        |
-| Billing | started |
-| Reports | Not started |
+| Step | Status |
+|---|--------|
+| Project Scaffold | Done   |
+| Authentication & JWT | Done   |
+| Patient Management | Done   |
+| Appointment Management | Done   |
+| Treatment Records | Done   |
+| Billing | Done   |
+| Reports | Done   |
 
 ## Local Development
 
