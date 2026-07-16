@@ -40,6 +40,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final AppointmentRepository appointmentRepository;
     private final InvoiceMapper         invoiceMapper;
     private final PaymentMapper         paymentMapper;
+    private final PdfGeneratorService   pdfGeneratorService;
 
     @Override
     @Transactional
@@ -242,5 +243,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setDiscount(appliedDiscount);
         invoice.setNetAmount(net.compareTo(BigDecimal.ZERO) < 0
                 ? BigDecimal.ZERO : net);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] generatePdf(Long invoiceId) {
+        Invoice invoice = findOrThrow(invoiceId);
+        return pdfGeneratorService.generateInvoicePdf(invoice);
     }
 }

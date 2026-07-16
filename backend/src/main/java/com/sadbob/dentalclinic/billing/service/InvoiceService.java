@@ -26,4 +26,6 @@ public interface InvoiceService {
     PaymentResponse addPayment(Long invoiceId, PaymentRequest request);
 
     List<PaymentResponse> getPayments(Long invoiceId);
+
+    byte[] generatePdf(Long invoiceId);
 }

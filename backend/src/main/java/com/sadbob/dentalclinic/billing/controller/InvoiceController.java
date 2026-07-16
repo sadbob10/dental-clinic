@@ -82,4 +82,16 @@ public class InvoiceController {
     ) {
         return ResponseEntity.ok(invoiceService.updateStatus(id, status));
     }
+
+    @GetMapping("/{id}/pdf")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST')")
+    @Operation(summary = "Download invoice as PDF")
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
+        byte[] pdf = invoiceService.generatePdf(id);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition",
+                        "attachment; filename=\"invoice-" + id + ".pdf\"")
+                .body(pdf);
+    }
 }

@@ -36,3 +36,10 @@ logging:
   level:
     "org.hibernate.SQL": DEBUG
     "org.hibernate.type.descriptor.sql.BasicBinder": TRACE
+
+
+clinic:
+  name: Dental Clinic
+  address: Addis Ababa, Ethiopia
+  phone: "+251-XXX-XXXX"
+  email: info@dentalclinic.com
