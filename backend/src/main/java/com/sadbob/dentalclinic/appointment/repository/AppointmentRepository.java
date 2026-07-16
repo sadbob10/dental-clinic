@@ -167,4 +167,19 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("endOfDay")   LocalDateTime endOfDay
     );
+
+    // All appointments in a month range (no dentist filter)
+    List<Appointment> findByDeletedFalseAndScheduledAtBetweenAndStatusNotInOrderByScheduledAtAsc(
+            LocalDateTime from,
+            LocalDateTime to,
+            List<AppointmentStatus> excludedStatuses
+    );
+
+    // All appointments in a month range filtered by dentist
+    List<Appointment> findByDeletedFalseAndDentist_IdAndScheduledAtBetweenAndStatusNotInOrderByScheduledAtAsc(
+            Long dentistId,
+            LocalDateTime from,
+            LocalDateTime to,
+            List<AppointmentStatus> excludedStatuses
+    );
 }

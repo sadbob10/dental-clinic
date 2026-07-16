@@ -1,9 +1,6 @@
 package com.sadbob.dentalclinic.appointment.controller;
 
-import com.sadbob.dentalclinic.appointment.dto.AppointmentRequest;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentResponse;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentStatusRequest;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentSummary;
+import com.sadbob.dentalclinic.appointment.dto.*;
 import com.sadbob.dentalclinic.appointment.enums.AppointmentStatus;
 import com.sadbob.dentalclinic.appointment.service.AppointmentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,6 +66,19 @@ public class AppointmentController {
     @Operation(summary = "Get today's appointments")
     public ResponseEntity<List<AppointmentSummary>> getToday() {
         return ResponseEntity.ok(appointmentService.getToday());
+    }
+
+    @GetMapping("/calendar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST', 'DENTIST')")
+    @Operation(summary = "Get appointments grouped by day for a calendar view")
+    public ResponseEntity<CalendarResponse> getCalendar(
+            @RequestParam int year,
+            @RequestParam int month,
+            @RequestParam(required = false) Long dentistId
+    ) {
+        return ResponseEntity.ok(
+                appointmentService.getCalendar(year, month, dentistId)
+        );
     }
 
 

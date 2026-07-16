@@ -1,9 +1,6 @@
 package com.sadbob.dentalclinic.appointment.service;
 
-import com.sadbob.dentalclinic.appointment.dto.AppointmentRequest;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentResponse;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentStatusRequest;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentSummary;
+import com.sadbob.dentalclinic.appointment.dto.*;
 import com.sadbob.dentalclinic.appointment.enums.AppointmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +29,6 @@ public interface AppointmentService {
     AppointmentResponse updateStatus(Long id, AppointmentStatusRequest request);
 
     void delete(Long id);
+
+    CalendarResponse getCalendar(int year, int month, Long dentistId);
 }

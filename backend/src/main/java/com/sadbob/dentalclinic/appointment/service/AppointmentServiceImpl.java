@@ -1,9 +1,6 @@
 package com.sadbob.dentalclinic.appointment.service;
 
-import com.sadbob.dentalclinic.appointment.dto.AppointmentRequest;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentResponse;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentStatusRequest;
-import com.sadbob.dentalclinic.appointment.dto.AppointmentSummary;
+import com.sadbob.dentalclinic.appointment.dto.*;
 import com.sadbob.dentalclinic.appointment.entity.Appointment;
 import com.sadbob.dentalclinic.appointment.enums.AppointmentStatus;
 import com.sadbob.dentalclinic.appointment.mapper.AppointmentMapper;
@@ -24,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -196,5 +194,44 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new IllegalArgumentException(
                     "Dentist already has an appointment at this time");
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CalendarResponse getCalendar(int year, int month, Long dentistId) {
+        LocalDateTime from = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime to   = LocalDate.of(year, month, 1)
+                .withDayOfMonth(LocalDate.of(year, month, 1).lengthOfMonth())
+                .atTime(LocalTime.MAX);
+
+        List<AppointmentStatus> excluded = List.of(
+                AppointmentStatus.CANCELLED,
+                AppointmentStatus.NO_SHOW
+        );
+
+        List<Appointment> appointments;
+
+        if (dentistId != null) {
+            appointments = appointmentRepository
+                    .findByDeletedFalseAndDentist_IdAndScheduledAtBetweenAndStatusNotInOrderByScheduledAtAsc(
+                            dentistId, from, to, excluded);
+        } else {
+            appointments = appointmentRepository
+                    .findByDeletedFalseAndScheduledAtBetweenAndStatusNotInOrderByScheduledAtAsc(
+                            from, to, excluded);
+        }
+
+        // Group by date
+        Map<LocalDate, List<AppointmentSummary>> days = appointments.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        a -> a.getScheduledAt().toLocalDate(),
+                        java.util.TreeMap::new,
+                        java.util.stream.Collectors.mapping(
+                                appointmentMapper::toSummary,
+                                java.util.stream.Collectors.toList()
+                        )
+                ));
+
+        return new CalendarResponse(year, month, days);
     }
 }
