@@ -39,9 +39,10 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
-    public ReceptionistDashboardResponse getReceptionistDashboard() {
-        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
-        LocalDateTime endOfDay   = LocalDate.now().atTime(LocalTime.MAX);
+    public ReceptionistDashboardResponse getReceptionistDashboard(LocalDate date) {
+        LocalDate targetDate     = date != null ? date : LocalDate.now();
+        LocalDateTime startOfDay = targetDate.atStartOfDay();
+        LocalDateTime endOfDay   = targetDate.atTime(LocalTime.MAX);
 
         // Today's appointment stats
         List<AppointmentSummary> todayList = appointmentRepository
@@ -63,9 +64,8 @@ public class DashboardServiceImpl implements DashboardService {
                 todayList.size(), scheduled, confirmed, completed, cancelled
         );
 
-        // Upcoming appointments (next 5 after now, scheduled or confirmed)
         LocalDateTime now         = LocalDateTime.now();
-        LocalDateTime endOfDayNow = LocalDate.now().atTime(LocalTime.MAX);
+        LocalDateTime endOfDayNow = targetDate.atTime(LocalTime.MAX);
 
         List<AppointmentSummary> upcoming = appointmentRepository
                 .findTodayAppointments(now, endOfDayNow)

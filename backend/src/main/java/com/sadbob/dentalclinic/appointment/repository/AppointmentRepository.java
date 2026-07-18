@@ -182,4 +182,23 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             LocalDateTime to,
             List<AppointmentStatus> excludedStatuses
     );
+
+    // Find cancellable appointments for a dentist on a specific date
+    @Query("""
+        SELECT a FROM Appointment a
+        WHERE a.deleted = false
+        AND a.dentist.id = :dentistId
+        AND a.scheduledAt >= :startOfDay
+        AND a.scheduledAt <= :endOfDay
+        AND a.status IN (
+            com.sadbob.dentalclinic.appointment.enums.AppointmentStatus.SCHEDULED,
+            com.sadbob.dentalclinic.appointment.enums.AppointmentStatus.CONFIRMED
+        )
+        ORDER BY a.scheduledAt ASC
+        """)
+    List<Appointment> findCancellableByDentistAndDate(
+            @Param("dentistId")  Long dentistId,
+            @Param("startOfDay") LocalDateTime startOfDay,
+            @Param("endOfDay")   LocalDateTime endOfDay
+    );
 }

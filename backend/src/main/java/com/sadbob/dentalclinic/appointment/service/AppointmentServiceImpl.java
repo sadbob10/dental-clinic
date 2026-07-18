@@ -240,4 +240,35 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return new CalendarResponse(year, month, days);
     }
+
+    @Override
+    @Transactional
+    public BulkCancelResponse bulkCancel(Long dentistId, LocalDate date, String reason) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay   = date.atTime(LocalTime.MAX);
+
+        List<Appointment> cancellable = appointmentRepository
+                .findCancellableByDentistAndDate(dentistId, startOfDay, endOfDay);
+
+        for (Appointment appointment : cancellable) {
+            appointment.setStatus(AppointmentStatus.CANCELLED);
+            appointment.setNotes(
+                    (appointment.getNotes() != null
+                            ? appointment.getNotes() + " | " : "")
+                            + "Bulk cancelled: " + reason
+            );
+            appointmentRepository.save(appointment);
+            emailService.sendAppointmentStatusUpdate(appointment);
+        }
+
+        log.info("Bulk cancelled {} appointments for dentist {} on {}",
+                cancellable.size(), dentistId, date);
+
+        return new BulkCancelResponse(
+                cancellable.size(),
+                date,
+                dentistId,
+                reason
+        );
+    }
 }

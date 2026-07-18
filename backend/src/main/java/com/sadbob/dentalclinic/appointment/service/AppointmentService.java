@@ -31,4 +31,6 @@ public interface AppointmentService {
     void delete(Long id);
 
     CalendarResponse getCalendar(int year, int month, Long dentistId);
+
+    BulkCancelResponse bulkCancel(Long dentistId, LocalDate date, String reason);
 }

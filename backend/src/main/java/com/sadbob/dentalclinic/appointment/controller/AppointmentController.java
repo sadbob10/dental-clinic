@@ -81,6 +81,19 @@ public class AppointmentController {
         );
     }
 
+    @PatchMapping("/bulk-cancel")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST')")
+    @Operation(summary = "Cancel all appointments for a dentist on a specific date")
+    public ResponseEntity<BulkCancelResponse> bulkCancel(
+            @RequestParam Long dentistId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(defaultValue = "No reason provided") String reason
+    ) {
+        return ResponseEntity.ok(
+                appointmentService.bulkCancel(dentistId, date, reason)
+        );
+    }
+
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPTIONIST', 'DENTIST')")
