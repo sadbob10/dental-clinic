@@ -7,6 +7,7 @@ import com.sadbob.dentalclinic.appointment.mapper.AppointmentMapper;
 import com.sadbob.dentalclinic.appointment.repository.AppointmentRepository;
 import com.sadbob.dentalclinic.auth.entity.User;
 import com.sadbob.dentalclinic.auth.repository.UserRepository;
+import com.sadbob.dentalclinic.notification.service.EmailService;
 import com.sadbob.dentalclinic.patient.entity.Patient;
 import com.sadbob.dentalclinic.patient.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +33,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final PatientRepository     patientRepository;
     private final UserRepository        userRepository;
     private final AppointmentMapper     appointmentMapper;
+    private final EmailService emailService;
 
     @Override
     @Transactional
@@ -57,6 +59,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info("Appointment created: id={}, patient={}, dentist={}, at={}",
                 saved.getId(), patient.getFullName(),
                 dentist.getFullName(), saved.getScheduledAt());
+
+        emailService.sendAppointmentConfirmation(saved);
 
         return appointmentMapper.toResponse(saved);
     }
@@ -161,6 +165,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info("Appointment {} status changed: {} → {}",
                 id, current, next);
+
+        emailService.sendAppointmentStatusUpdate(updated);
 
         return appointmentMapper.toResponse(updated);
     }

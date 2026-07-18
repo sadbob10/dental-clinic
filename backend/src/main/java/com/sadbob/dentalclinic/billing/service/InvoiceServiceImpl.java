@@ -15,6 +15,7 @@ import com.sadbob.dentalclinic.billing.mapper.InvoiceMapper;
 import com.sadbob.dentalclinic.billing.mapper.PaymentMapper;
 import com.sadbob.dentalclinic.billing.repository.InvoiceRepository;
 import com.sadbob.dentalclinic.billing.repository.PaymentRepository;
+import com.sadbob.dentalclinic.notification.service.EmailService;
 import com.sadbob.dentalclinic.patient.entity.Patient;
 import com.sadbob.dentalclinic.patient.repository.PatientRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,6 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceMapper         invoiceMapper;
     private final PaymentMapper         paymentMapper;
     private final PdfGeneratorService   pdfGeneratorService;
+    private final EmailService          emailService;
 
     @Override
     @Transactional
@@ -151,6 +153,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         log.info("Invoice {} status changed to {}", id, status);
 
+        if (status == InvoiceStatus.ISSUED) {
+            emailService.sendInvoiceIssued(updated);
+        }
+
         return invoiceMapper.toResponse(updated);
     }
 
@@ -196,6 +202,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         log.info("Payment recorded: invoice={}, amount={}, method={}",
                 invoiceId, request.amountPaid(), request.paymentMethod());
+
+          // Reload invoice to get updated status
+        Invoice reloadedInvoice = findOrThrow(invoiceId);
+        emailService.sendPaymentReceived(reloadedInvoice);
 
         return paymentMapper.toResponse(payment);
     }

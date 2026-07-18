@@ -8,6 +8,7 @@ import com.sadbob.dentalclinic.auth.entity.User;
 import com.sadbob.dentalclinic.auth.enums.Role;
 import com.sadbob.dentalclinic.auth.mapper.UserMapper;
 import com.sadbob.dentalclinic.auth.repository.UserRepository;
+import com.sadbob.dentalclinic.notification.service.EmailService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository  userRepository;
     private final UserMapper      userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService    emailService;
 
     @Override
     @Transactional
@@ -43,6 +45,8 @@ public class UserServiceImpl implements UserService {
 
         log.info("Staff account created: id={}, email={}, role={}",
                 saved.getId(), saved.getEmail(), saved.getRole());
+
+        emailService.sendWelcomeEmail(saved, request.password());
 
         return userMapper.toResponse(saved);
     }
