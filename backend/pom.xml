@@ -13,8 +13,8 @@
 	<groupId>com.sadbob.dentalclinic</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
-	<description>Dental Clinic Management System</description>
+	<name>dental-clinic-backend</name>
+	<description>Dental Clinic Management System — Spring Boot REST API</description>
 
 	<properties>
 		<java.version>25</java.version>

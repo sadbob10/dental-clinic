@@ -2,22 +2,54 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: dental_clinic
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME:-dental_clinic}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # backend:
-  #   build: ./backend
-  #   depends_on:
-  #     - postgres
-  #   environment:
-  #     DB_HOST: postgres
-  #   ports:
-  #     - "8080:8080"
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-dental_clinic}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-900000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
+      MAIL_HOST: ${MAIL_HOST:-sandbox.smtp.mailtrap.io}
+      MAIL_PORT: ${MAIL_PORT:-2525}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      FROM_EMAIL: ${FROM_EMAIL:-noreply@dentalclinic.com}
+      FROM_NAME: ${FROM_NAME:-Dental Clinic}
+      NOTIFICATIONS_ENABLED: ${NOTIFICATIONS_ENABLED:-true}
+      CLINIC_NAME: ${CLINIC_NAME:-Dental Clinic}
+      CLINIC_ADDRESS: ${CLINIC_ADDRESS:-Addis Ababa, Ethiopia}
+      CLINIC_PHONE: ${CLINIC_PHONE:-+251-XXX-XXXX}
+      CLINIC_EMAIL: ${CLINIC_EMAIL:-info@dentalclinic.com}
+      SERVER_PORT: 8002
+    ports:
+      - "${SERVER_PORT:-8002}:8002"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:02"
 
 volumes:
   pgdata:

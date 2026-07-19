@@ -7,6 +7,12 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 600000
+      connection-timeout: 20000
 
   jpa:
     hibernate:
@@ -21,8 +27,8 @@ spring:
   mail:
     host: ${MAIL_HOST:sandbox.smtp.mailtrap.io}
     port: ${MAIL_PORT:2525}
-    username: ${MAIL_USERNAME:4644f4e60a74dc}
-    password: ${MAIL_PASSWORD:4df7ad3b7d0492}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -33,17 +39,17 @@ spring:
 application:
   jwt:
     secret: ${JWT_SECRET:3f8b2c9d4e1a7f6b0c5d2e8a4b9f3c7d1e6a2b5f8c0d4e7a1b3c6d9e2f5a8b1}
-    expiration-ms: 900000              # 15 minutes
-    refresh-expiration-ms: 604800000   # 7 days
+    expiration-ms: ${JWT_EXPIRATION_MS:900000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
 
 server:
-  port: 8002
+  port: ${SERVER_PORT:8002}
 
 clinic:
-  name: Dental Clinic
-  address: Addis Ababa, Ethiopia
-  phone: "+251-XXX-XXXX"
-  email: info@dentalclinic.com
+  name: ${CLINIC_NAME:Dental Clinic}
+  address: ${CLINIC_ADDRESS:Addis Ababa, Ethiopia}
+  phone: ${CLINIC_PHONE:+251-XXX-XXXX}
+  email: ${CLINIC_EMAIL:info@dentalclinic.com}
 
 notification:
   from-email: ${FROM_EMAIL:noreply@dentalclinic.com}
@@ -57,5 +63,5 @@ springdoc:
 
 logging:
   level:
-    "org.hibernate.SQL": DEBUG
-    "org.hibernate.type.descriptor.sql.BasicBinder": TRACE
+    root: INFO
+    com.sadbob.dentalclinic: INFO
