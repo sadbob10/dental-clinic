@@ -4,12 +4,17 @@ import com.sadbob.dentalclinic.auth.dto.AuthResponse;
 import com.sadbob.dentalclinic.auth.dto.LoginRequest;
 import com.sadbob.dentalclinic.auth.dto.RefreshTokenRequest;
 import com.sadbob.dentalclinic.auth.service.AuthService;
+import com.sadbob.dentalclinic.common.ratelimit.RateLimitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,14 +22,29 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "Login, logout and token refresh")
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthService       authService;
+    private final RateLimitService  rateLimitService;
 
     @PostMapping("/login")
     @Operation(summary = "Login with email and password")
-    public ResponseEntity<AuthResponse> login(
-            @Valid @RequestBody LoginRequest request
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest
     ) {
-        return ResponseEntity.ok(authService.login(request));
+        String ip = getClientIp(httpRequest);
+
+        if (!rateLimitService.tryConsume(ip)) {
+            return ResponseEntity
+                    .status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of(
+                            "status", 429,
+                            "error", "Too many login attempts. Try again in 1 minute.",
+                            "remainingAttempts", 0
+                    ));
+        }
+
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
@@ -42,5 +62,15 @@ public class AuthController {
     ) {
         authService.logout(request);
         return ResponseEntity.noContent().build();
+    }
+
+    // ── helpers ───────────────────────────────────────────────────────────────
+
+    private String getClientIp(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

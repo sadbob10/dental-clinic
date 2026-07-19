@@ -1,7 +1,7 @@
 package com.sadbob.dentalclinic.auth.dto;
 
+import com.sadbob.dentalclinic.common.validation.ValidPassword;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public record ChangePasswordRequest(
 
@@ -9,7 +9,7 @@ public record ChangePasswordRequest(
         String currentPassword,
 
         @NotBlank(message = "New password is required")
-        @Size(min = 8, message = "New password must be at least 8 characters")
+        @ValidPassword
         String newPassword,
 
         @NotBlank(message = "Confirm password is required")
