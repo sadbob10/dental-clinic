@@ -25,10 +25,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository  userRepository;
-    private final UserMapper      userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailService    emailService;
+    private final UserRepository       userRepository;
+    private final UserMapper           userMapper;
+    private final PasswordEncoder      passwordEncoder;
+    private final EmailService         emailService;
+    private final RefreshTokenService  refreshTokenService;
 
     @Override
     @Transactional
@@ -146,6 +147,9 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
+
+        // Revoke all refresh tokens on password change
+        refreshTokenService.revokeAllUserTokens(user.getId());
 
         log.info("Password changed for user: {}", email);
     }
