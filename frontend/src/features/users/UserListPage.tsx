@@ -47,7 +47,7 @@ export function UserListPage() {
                 onAction={() => navigate('/users/new')}
             />
 
-            <Box mb={2}>
+            <Box sx={{ mb: 2 }}>
                 <TextField
                     select label="Filter by Role"
                     value={role}

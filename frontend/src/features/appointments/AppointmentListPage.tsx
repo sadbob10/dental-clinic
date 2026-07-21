@@ -63,7 +63,7 @@ export function AppointmentListPage() {
             />
 
             {/* Filters */}
-            <Box display="flex" gap={2} mb={2} flexWrap="wrap">
+            <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                 <TextField
                     select
                     label="Status"
@@ -81,7 +81,7 @@ export function AppointmentListPage() {
                     label="Date"
                     value={date}
                     onChange={(e) => { setDate(e.target.value); setPage(0) }}
-                    InputLabelProps={{ shrink: true }}
+                    slotProps={{ inputLabel: { shrink: true } }}
                     sx={{ width: 180 }}
                 />
                 <Button
@@ -120,8 +120,8 @@ export function AppointmentListPage() {
                                         <TableCell sx={{ fontWeight: 600 }}>{apt.patientName}</TableCell>
                                         <TableCell>{apt.dentistName}</TableCell>
                                         <TableCell>
-                                            <Box fontSize={14}>{dayjs(apt.scheduledAt).format('MMM D, YYYY')}</Box>
-                                            <Box fontSize={12} color="text.secondary">
+                                            <Box sx={{ fontSize: 14 }}>{dayjs(apt.scheduledAt).format('MMM D, YYYY')}</Box>
+                                            <Box sx={{ fontSize: 12, color: 'text.secondary' }}>
                                                 {dayjs(apt.scheduledAt).format('h:mm A')} • {apt.durationMinutes} min
                                             </Box>
                                         </TableCell>

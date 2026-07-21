@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-    Box, Card, CardContent, Grid, Typography, Chip,
+    Box, Card, CardContent, Typography,
     IconButton, MenuItem, TextField
 } from '@mui/material'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
@@ -57,10 +57,18 @@ export function AppointmentCalendarPage() {
             <PageHeader title="Appointment Calendar" />
 
             {/* Controls */}
-            <Box display="flex" alignItems="center" gap={2} mb={3} flexWrap="wrap">
-                <Box display="flex" alignItems="center" gap={1}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    mb: 3,
+                    flexWrap: 'wrap',
+                }}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <IconButton onClick={prevMonth}><ChevronLeft /></IconButton>
-                    <Typography variant="h6" fontWeight={600} sx={{ minWidth: 160, textAlign: 'center' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, minWidth: 160, textAlign: 'center' }}>
                         {currentMonth.format('MMMM YYYY')}
                     </Typography>
                     <IconButton onClick={nextMonth}><ChevronRight /></IconButton>
@@ -83,37 +91,48 @@ export function AppointmentCalendarPage() {
                 <Card>
                     <CardContent>
                         {/* Day headers */}
-                        <Grid container sx={{ mb: 1 }}>
+                        <Box
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(7, 1fr)',
+                                mb: 1,
+                            }}
+                        >
                             {DAYS.map((day) => (
-                                <Grid item xs={12 / 7} key={day}>
-                                    <Typography
-                                        variant="caption"
-                                        fontWeight={600}
-                                        color="text.secondary"
-                                        textAlign="center"
-                                        display="block"
-                                        py={1}
-                                    >
-                                        {day}
-                                    </Typography>
-                                </Grid>
+                                <Typography
+                                    key={day}
+                                    variant="caption"
+                                    sx={{
+                                        fontWeight: 600,
+                                        color: 'text.secondary',
+                                        textAlign: 'center',
+                                        display: 'block',
+                                        py: 1,
+                                    }}
+                                >
+                                    {day}
+                                </Typography>
                             ))}
-                        </Grid>
+                        </Box>
 
                         {/* Calendar grid */}
-                        <Grid container>
+                        <Box
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(7, 1fr)',
+                            }}
+                        >
                             {/* Empty cells before first day */}
                             {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-                                <Grid item xs={12 / 7} key={`empty-${i}`}>
-                                    <Box
-                                        sx={{
-                                            minHeight: 100,
-                                            borderTop: '1px solid',
-                                            borderColor: 'divider',
-                                            bgcolor: 'grey.50',
-                                        }}
-                                    />
-                                </Grid>
+                                <Box
+                                    key={`empty-${i}`}
+                                    sx={{
+                                        minHeight: 100,
+                                        borderTop: '1px solid',
+                                        borderColor: 'divider',
+                                        bgcolor: 'grey.50',
+                                    }}
+                                />
                             ))}
 
                             {/* Day cells */}
@@ -127,60 +146,68 @@ export function AppointmentCalendarPage() {
                                     today.year() === year
 
                                 return (
-                                    <Grid item xs={12 / 7} key={dayNum}>
-                                        <Box
+                                    <Box
+                                        key={dayNum}
+                                        sx={{
+                                            minHeight: 100,
+                                            borderTop: '1px solid',
+                                            borderLeft: '1px solid',
+                                            borderColor: 'divider',
+                                            p: 0.5,
+                                            bgcolor: isToday ? 'primary.lighter' : 'background.paper',
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="caption"
                                             sx={{
-                                                minHeight: 100,
-                                                borderTop: '1px solid',
-                                                borderLeft: '1px solid',
-                                                borderColor: 'divider',
-                                                p: 0.5,
-                                                bgcolor: isToday ? 'primary.lighter' : 'background.paper',
+                                                fontWeight: isToday ? 700 : 400,
+                                                color: isToday ? 'primary.main' : 'text.secondary',
+                                                display: 'block',
+                                                mb: 0.5,
                                             }}
                                         >
-                                            <Typography
-                                                variant="caption"
-                                                fontWeight={isToday ? 700 : 400}
-                                                color={isToday ? 'primary.main' : 'text.secondary'}
-                                                display="block"
-                                                mb={0.5}
+                                            {dayNum}
+                                        </Typography>
+                                        {dayAppointments.slice(0, 3).map((apt) => (
+                                            <Box
+                                                key={apt.id}
+                                                sx={{
+                                                    bgcolor: STATUS_COLORS[apt.status],
+                                                    color: 'white',
+                                                    borderRadius: 0.5,
+                                                    px: 0.5,
+                                                    py: 0.25,
+                                                    mb: 0.25,
+                                                    fontSize: 10,
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                }}
                                             >
-                                                {dayNum}
+                                                {dayjs(apt.scheduledAt).format('h:mm')} {apt.patientName}
+                                            </Box>
+                                        ))}
+                                        {dayAppointments.length > 3 && (
+                                            <Typography variant="caption" color="text.secondary">
+                                                +{dayAppointments.length - 3} more
                                             </Typography>
-                                            {dayAppointments.slice(0, 3).map((apt) => (
-                                                <Box
-                                                    key={apt.id}
-                                                    sx={{
-                                                        bgcolor: STATUS_COLORS[apt.status],
-                                                        color: 'white',
-                                                        borderRadius: 0.5,
-                                                        px: 0.5,
-                                                        py: 0.25,
-                                                        mb: 0.25,
-                                                        fontSize: 10,
-                                                        whiteSpace: 'nowrap',
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                    }}
-                                                >
-                                                    {dayjs(apt.scheduledAt).format('h:mm')} {apt.patientName}
-                                                </Box>
-                                            ))}
-                                            {dayAppointments.length > 3 && (
-                                                <Typography variant="caption" color="text.secondary">
-                                                    +{dayAppointments.length - 3} more
-                                                </Typography>
-                                            )}
-                                        </Box>
-                                    </Grid>
+                                        )}
+                                    </Box>
                                 )
                             })}
-                        </Grid>
+                        </Box>
 
                         {/* Legend */}
-                        <Box display="flex" gap={2} mt={2} flexWrap="wrap">
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                gap: 2,
+                                mt: 2,
+                                flexWrap: 'wrap',
+                            }}
+                        >
                             {Object.entries(STATUS_COLORS).map(([status, color]) => (
-                                <Box key={status} display="flex" alignItems="center" gap={0.5}>
+                                <Box key={status} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                     <Box sx={{ width: 12, height: 12, borderRadius: 0.5, bgcolor: color }} />
                                     <Typography variant="caption">{status}</Typography>
                                 </Box>

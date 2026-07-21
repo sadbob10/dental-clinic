@@ -46,7 +46,7 @@ export function AuditLogPage() {
             />
 
             {/* Filters */}
-            <Box display="flex" gap={2} mb={2} flexWrap="wrap">
+            <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                 <TextField
                     label="Performed By"
                     placeholder="user@email.com"

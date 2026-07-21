@@ -97,7 +97,7 @@ export function InvoiceDetailPage() {
             />
 
             {/* Action buttons */}
-            <Box display="flex" gap={2} mb={3} flexWrap="wrap">
+            <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                 <Button
                     variant="outlined"
                     startIcon={<PictureAsPdf />}
@@ -138,25 +138,25 @@ export function InvoiceDetailPage() {
 
             <Grid container spacing={3}>
                 {/* Invoice info */}
-                <Grid item xs={12} md={4}>
+                <Grid size={{ xs: 12, md: 4 }}>
                     <Card>
                         <CardContent>
-                            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                                <Typography variant="subtitle1" fontWeight={600}>Details</Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>Details</Typography>
                                 <Chip label={invoice.status} size="small" color={STATUS_COLORS[invoice.status]} />
                             </Box>
-                            <Box mb={1}>
+                            <Box sx={{ mb: 1 }}>
                                 <Typography variant="caption" color="text.secondary">Patient</Typography>
-                                <Typography variant="body2" fontWeight={500}>{invoice.patientName}</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 500 }}>{invoice.patientName}</Typography>
                             </Box>
-                            <Box mb={1}>
+                            <Box sx={{ mb: 1 }}>
                                 <Typography variant="caption" color="text.secondary">Created</Typography>
                                 <Typography variant="body2">
                                     {dayjs(invoice.createdAt).format('MMM D, YYYY')}
                                 </Typography>
                             </Box>
                             {invoice.issuedAt && (
-                                <Box mb={1}>
+                                <Box sx={{ mb: 1 }}>
                                     <Typography variant="caption" color="text.secondary">Issued</Typography>
                                     <Typography variant="body2">
                                         {dayjs(invoice.issuedAt).format('MMM D, YYYY')}
@@ -164,7 +164,7 @@ export function InvoiceDetailPage() {
                                 </Box>
                             )}
                             {invoice.dueDate && (
-                                <Box mb={1}>
+                                <Box sx={{ mb: 1 }}>
                                     <Typography variant="caption" color="text.secondary">Due Date</Typography>
                                     <Typography variant="body2">
                                         {dayjs(invoice.dueDate).format('MMM D, YYYY')}
@@ -172,31 +172,35 @@ export function InvoiceDetailPage() {
                                 </Box>
                             )}
                             <Divider sx={{ my: 2 }} />
-                            <Box display="flex" justifyContent="space-between" mb={1}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                 <Typography variant="body2">Subtotal</Typography>
                                 <Typography variant="body2">{invoice.totalAmount.toFixed(2)}</Typography>
                             </Box>
-                            <Box display="flex" justifyContent="space-between" mb={1}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                 <Typography variant="body2">Discount</Typography>
                                 <Typography variant="body2" color="error">-{invoice.discount.toFixed(2)}</Typography>
                             </Box>
-                            <Box display="flex" justifyContent="space-between" mb={1}>
-                                <Typography variant="body2" fontWeight={600}>Net Amount</Typography>
-                                <Typography variant="body2" fontWeight={600}>{invoice.netAmount.toFixed(2)}</Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                <Typography variant="body2" sx={{ fontWeight: 600 }}>Net Amount</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 600 }}>{invoice.netAmount.toFixed(2)}</Typography>
                             </Box>
-                            <Box display="flex" justifyContent="space-between" mb={1}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                 <Typography variant="body2">Total Paid</Typography>
                                 <Typography variant="body2" color="success.main">{totalPaid.toFixed(2)}</Typography>
                             </Box>
                             <Box
-                                display="flex" justifyContent="space-between"
-                                bgcolor={balance > 0 ? 'error.lighter' : 'success.lighter'}
-                                p={1} borderRadius={1}
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    bgcolor: balance > 0 ? 'error.lighter' : 'success.lighter',
+                                    p: 1,
+                                    borderRadius: 1,
+                                }}
                             >
-                                <Typography variant="body2" fontWeight={700}>Balance Due</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 700 }}>Balance Due</Typography>
                                 <Typography
                                     variant="body2"
-                                    fontWeight={700}
+                                    sx={{ fontWeight: 700 }}
                                     color={balance > 0 ? 'error.main' : 'success.main'}
                                 >
                                     {balance.toFixed(2)}
@@ -206,11 +210,11 @@ export function InvoiceDetailPage() {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     {/* Items */}
                     <Card sx={{ mb: 3 }}>
                         <CardContent>
-                            <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                 Services
                             </Typography>
                             <Table size="small">
@@ -242,14 +246,12 @@ export function InvoiceDetailPage() {
                     {showPaymentForm && (
                         <Card sx={{ mb: 3, border: '2px solid', borderColor: 'success.main' }}>
                             <CardContent>
-                                <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                     Record Payment
                                 </Typography>
                                 {paymentMutation.isError && (
                                     <Alert severity="error" sx={{ mb: 2 }}>
-                                        {paymentMutation.error instanceof Error
-                                            ? paymentMutation.error.message
-                                            : 'Payment failed'}
+                                        {paymentMutation.error?.message ?? 'Payment failed'}
                                     </Alert>
                                 )}
                                 <Box
@@ -257,18 +259,18 @@ export function InvoiceDetailPage() {
                                     onSubmit={handleSubmit((d) => paymentMutation.mutate(d))}
                                 >
                                     <Grid container spacing={2}>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid size={{ xs: 12, md: 6 }}>
                                             <TextField
                                                 label="Amount *"
                                                 type="number"
                                                 fullWidth
-                                                inputProps={{ min: 0.01, step: 0.01, max: balance }}
+                                                slotProps={{ htmlInput: { min: 0.01, step: 0.01, max: balance } }}
                                                 {...register('amountPaid', { valueAsNumber: true })}
                                                 error={!!errors.amountPaid}
                                                 helperText={errors.amountPaid?.message ?? `Balance: ${balance.toFixed(2)}`}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid size={{ xs: 12, md: 6 }}>
                                             <Controller
                                                 name="paymentMethod"
                                                 control={control}
@@ -281,14 +283,14 @@ export function InvoiceDetailPage() {
                                                 )}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid size={{ xs: 12, md: 6 }}>
                                             <TextField
                                                 label="Reference Number"
                                                 fullWidth
                                                 {...register('referenceNumber')}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid size={{ xs: 12, md: 6 }}>
                                             <TextField
                                                 label="Notes"
                                                 fullWidth
@@ -296,7 +298,7 @@ export function InvoiceDetailPage() {
                                             />
                                         </Grid>
                                     </Grid>
-                                    <Box display="flex" gap={2} mt={2}>
+                                    <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                                         <Button onClick={() => setShowPaymentForm(false)}>Cancel</Button>
                                         <Button
                                             type="submit"
@@ -317,11 +319,11 @@ export function InvoiceDetailPage() {
                     {/* Payment history */}
                     <Card>
                         <CardContent>
-                            <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                 Payment History
                             </Typography>
                             {!payments || payments.length === 0 ? (
-                                <Typography color="text.secondary" textAlign="center" py={3}>
+                                <Typography color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
                                     No payments recorded yet
                                 </Typography>
                             ) : (

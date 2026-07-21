@@ -58,7 +58,7 @@ export function InvoiceListPage() {
                 onAction={canCreate ? () => navigate('/billing/new') : undefined}
             />
 
-            <Box mb={2}>
+            <Box sx={{ mb: 2 }}>
                 <TextField
                     select label="Status"
                     value={status}

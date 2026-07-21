@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
     Box, Card, CardContent, Grid, TextField, MenuItem,
     Button, CircularProgress, Alert, Typography,
@@ -74,21 +73,21 @@ export function InvoiceFormPage() {
 
             {mutation.isError && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                    {mutation.error instanceof Error ? mutation.error.message : 'Failed to create invoice'}
+                    {mutation.error?.message ?? 'Failed to create invoice'}
                 </Alert>
             )}
 
             <Box component="form" onSubmit={handleSubmit((d) => mutation.mutate(d))}>
                 <Grid container spacing={3}>
                     {/* Patient + details */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <Card>
                             <CardContent>
-                                <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                     Invoice Details
                                 </Typography>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12}>
+                                    <Grid size={{ xs: 12 }}>
                                         <Controller
                                             name="patientId"
                                             control={control}
@@ -109,25 +108,25 @@ export function InvoiceFormPage() {
                                             )}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={{ xs: 12 }}>
                                         <TextField
                                             label="Due Date"
                                             type="datetime-local"
                                             fullWidth
-                                            InputLabelProps={{ shrink: true }}
+                                            slotProps={{ inputLabel: { shrink: true } }}
                                             {...register('dueDate')}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={{ xs: 12 }}>
                                         <TextField
                                             label="Discount"
                                             type="number"
                                             fullWidth
-                                            inputProps={{ min: 0, step: 0.01 }}
+                                            slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
                                             {...register('discount', { valueAsNumber: true })}
                                         />
                                     </Grid>
-                                    <Grid item xs={12}>
+                                    <Grid size={{ xs: 12 }}>
                                         <TextField
                                             label="Notes"
                                             fullWidth multiline rows={3}
@@ -140,41 +139,43 @@ export function InvoiceFormPage() {
                     </Grid>
 
                     {/* Totals */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <Card sx={{ height: '100%' }}>
                             <CardContent>
-                                <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                     Summary
                                 </Typography>
-                                <Box display="flex" justifyContent="space-between" mb={1}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                     <Typography>Subtotal</Typography>
-                                    <Typography fontWeight={600}>{subtotal.toFixed(2)}</Typography>
+                                    <Typography sx={{ fontWeight: 600 }}>{subtotal.toFixed(2)}</Typography>
                                 </Box>
-                                <Box display="flex" justifyContent="space-between" mb={1}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                     <Typography>Discount</Typography>
                                     <Typography color="error">-{watchDiscount.toFixed(2)}</Typography>
                                 </Box>
                                 <Box
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    bgcolor="primary.main"
-                                    color="white"
-                                    p={1.5}
-                                    borderRadius={1}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        bgcolor: 'primary.main',
+                                        color: 'white',
+                                        p: 1.5,
+                                        borderRadius: 1,
+                                    }}
                                 >
-                                    <Typography fontWeight={700}>Net Amount</Typography>
-                                    <Typography fontWeight={700}>{netAmount.toFixed(2)}</Typography>
+                                    <Typography sx={{ fontWeight: 700 }}>Net Amount</Typography>
+                                    <Typography sx={{ fontWeight: 700 }}>{netAmount.toFixed(2)}</Typography>
                                 </Box>
                             </CardContent>
                         </Card>
                     </Grid>
 
                     {/* Line items */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Card>
                             <CardContent>
-                                <Box display="flex" justifyContent="space-between" mb={2}>
-                                    <Typography variant="subtitle1" fontWeight={600}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                                         Line Items
                                     </Typography>
                                     <Button
@@ -217,20 +218,20 @@ export function InvoiceFormPage() {
                                                     <TableCell>
                                                         <TextField
                                                             size="small" type="number"
-                                                            inputProps={{ min: 1 }}
+                                                            slotProps={{ htmlInput: { min: 1 } }}
                                                             {...register(`items.${index}.quantity`, { valueAsNumber: true })}
                                                         />
                                                     </TableCell>
                                                     <TableCell>
                                                         <TextField
                                                             size="small" type="number"
-                                                            inputProps={{ min: 0, step: 0.01 }}
+                                                            slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
                                                             {...register(`items.${index}.unitPrice`, { valueAsNumber: true })}
                                                             error={!!errors.items?.[index]?.unitPrice}
                                                         />
                                                     </TableCell>
                                                     <TableCell align="right">
-                                                        <Typography fontWeight={600}>
+                                                        <Typography sx={{ fontWeight: 600 }}>
                                                             {(qty * price).toFixed(2)}
                                                         </Typography>
                                                     </TableCell>
@@ -251,7 +252,7 @@ export function InvoiceFormPage() {
                     </Grid>
                 </Grid>
 
-                <Box display="flex" gap={2} justifyContent="flex-end" mt={3}>
+                <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
                     <Button onClick={() => navigate(-1)} disabled={mutation.isPending}>Cancel</Button>
                     <Button type="submit" variant="contained" disabled={mutation.isPending}>
                         {mutation.isPending

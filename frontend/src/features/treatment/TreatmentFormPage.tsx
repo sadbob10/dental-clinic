@@ -15,8 +15,8 @@ import { PageHeader } from '@/components/common/PageHeader'
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges'
 
 const schema = z.object({
-    patientId: z.number({ required_error: 'Patient is required' }),
-    dentistId: z.number({ required_error: 'Dentist is required' }),
+    patientId: z.number({ error: 'Patient is required' }),
+    dentistId: z.number({ error: 'Dentist is required' }),
     appointmentId: z.number().optional(),
     diagnosis: z.string().optional(),
     treatmentDone: z.string().min(1, 'Treatment description is required'),
@@ -90,7 +90,7 @@ export function TreatmentFormPage() {
 
             {mutation.isError && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                    {mutation.error instanceof Error ? mutation.error.message : 'Failed to save'}
+                    {mutation.error?.message ?? 'Failed to save'}
                 </Alert>
             )}
 
@@ -98,7 +98,7 @@ export function TreatmentFormPage() {
                 <CardContent>
                     <Box component="form" onSubmit={handleSubmit((d) => mutation.mutate(d))}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <Controller
                                     name="patientId"
                                     control={control}
@@ -119,7 +119,7 @@ export function TreatmentFormPage() {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <Controller
                                     name="dentistId"
                                     control={control}
@@ -138,7 +138,7 @@ export function TreatmentFormPage() {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Diagnosis"
                                     fullWidth multiline rows={2}
@@ -146,7 +146,7 @@ export function TreatmentFormPage() {
                                     placeholder="Patient's diagnosis..."
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Treatment Done *"
                                     fullWidth multiline rows={2}
@@ -156,7 +156,7 @@ export function TreatmentFormPage() {
                                     placeholder="Describe what was done..."
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Prescription"
                                     fullWidth multiline rows={2}
@@ -164,7 +164,7 @@ export function TreatmentFormPage() {
                                     placeholder="Medications prescribed..."
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Next Visit Notes"
                                     fullWidth multiline rows={2}
@@ -174,7 +174,7 @@ export function TreatmentFormPage() {
                             </Grid>
                         </Grid>
 
-                        <Box display="flex" gap={2} justifyContent="flex-end" mt={3}>
+                        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
                             <Button onClick={() => navigate(-1)} disabled={mutation.isPending}>
                                 Cancel
                             </Button>

@@ -17,7 +17,7 @@ const ROLES: Role[] = ['ADMIN', 'RECEPTIONIST', 'DENTIST']
 
 const schema = z.object({
     fullName: z.string().min(1, 'Full name is required'),
-    email: z.string().email('Invalid email'),
+    email: z.string().email({ message: 'Invalid email' }),
     password: z.string().min(8, 'Min 8 characters')
         .regex(/[A-Z]/, 'Need uppercase')
         .regex(/[a-z]/, 'Need lowercase')
@@ -75,7 +75,7 @@ export function UserFormPage() {
 
             {mutation.isError && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                    {mutation.error instanceof Error ? mutation.error.message : 'Failed to save'}
+                    {mutation.error?.message ?? 'Failed to save'}
                 </Alert>
             )}
 
@@ -83,7 +83,7 @@ export function UserFormPage() {
                 <CardContent>
                     <Box component="form" onSubmit={handleSubmit((d) => mutation.mutate(d))}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Full Name *" fullWidth
                                     {...register('fullName')}
@@ -91,7 +91,7 @@ export function UserFormPage() {
                                     helperText={errors.fullName?.message}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Email *" fullWidth type="email"
                                     {...register('email')}
@@ -99,7 +99,7 @@ export function UserFormPage() {
                                     helperText={errors.email?.message}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label={isEdit ? 'New Password (leave blank to keep)' : 'Password *'}
                                     fullWidth type="password"
@@ -108,7 +108,7 @@ export function UserFormPage() {
                                     helperText={errors.password?.message}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <Controller
                                     name="role"
                                     control={control}
@@ -128,7 +128,7 @@ export function UserFormPage() {
                             </Grid>
                         </Grid>
 
-                        <Box display="flex" gap={2} justifyContent="flex-end" mt={3}>
+                        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
                             <Button onClick={() => navigate(-1)} disabled={mutation.isPending}>
                                 Cancel
                             </Button>

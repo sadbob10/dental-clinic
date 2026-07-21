@@ -22,8 +22,8 @@ function StatBox({
     label: string; value: string | number; color?: string
 }) {
     return (
-        <Box textAlign="center" p={2}>
-            <Typography variant="h4" fontWeight={700} color={color}>
+        <Box sx={{ textAlign: 'center', p: 2 }}>
+            <Typography variant="h4" sx={{ fontWeight: 700 }} color={color}>
                 {value}
             </Typography>
             <Typography variant="caption" color="text.secondary">
@@ -85,13 +85,13 @@ export function ReportsPage() {
             {/* Date range */}
             <Card sx={{ mb: 3 }}>
                 <CardContent>
-                    <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
                         <TextField
                             label="From"
                             type="date"
                             value={from}
                             onChange={(e) => setFrom(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{ inputLabel: { shrink: true } }}
                             size="small"
                         />
                         <TextField
@@ -99,7 +99,7 @@ export function ReportsPage() {
                             type="date"
                             value={to}
                             onChange={(e) => setTo(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
+                            slotProps={{ inputLabel: { shrink: true } }}
                             size="small"
                         />
                         <Button
@@ -118,35 +118,35 @@ export function ReportsPage() {
             {!isLoading && !error && (
                 <Grid container spacing={3}>
                     {/* Revenue summary */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Card>
                             <CardContent>
-                                <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                     Revenue Summary
                                 </Typography>
                                 <Grid container>
-                                    <Grid item xs={6} md={3}>
+                                    <Grid size={{ xs: 6, md: 3 }}>
                                         <StatBox
                                             label="Total Invoiced"
                                             value={revenueQuery.data?.totalInvoiced.toFixed(2) ?? 0}
                                             color="primary.main"
                                         />
                                     </Grid>
-                                    <Grid item xs={6} md={3}>
+                                    <Grid size={{ xs: 6, md: 3 }}>
                                         <StatBox
                                             label="Total Collected"
                                             value={revenueQuery.data?.totalCollected.toFixed(2) ?? 0}
                                             color="success.main"
                                         />
                                     </Grid>
-                                    <Grid item xs={6} md={3}>
+                                    <Grid size={{ xs: 6, md: 3 }}>
                                         <StatBox
                                             label="Outstanding"
                                             value={revenueQuery.data?.totalOutstanding.toFixed(2) ?? 0}
                                             color="warning.main"
                                         />
                                     </Grid>
-                                    <Grid item xs={6} md={3}>
+                                    <Grid size={{ xs: 6, md: 3 }}>
                                         <StatBox
                                             label="Total Discount"
                                             value={revenueQuery.data?.totalDiscount.toFixed(2) ?? 0}
@@ -155,7 +155,7 @@ export function ReportsPage() {
                                     </Grid>
                                 </Grid>
                                 <Divider sx={{ my: 2 }} />
-                                <Box display="flex" gap={2} flexWrap="wrap" justifyContent="center">
+                                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
                                     <Chip label={`${revenueQuery.data?.invoiceCount ?? 0} Total Invoices`} />
                                     <Chip label={`${revenueQuery.data?.paidInvoiceCount ?? 0} Paid`} color="success" />
                                     <Chip label={`${revenueQuery.data?.partiallyPaidCount ?? 0} Partial`} color="warning" />
@@ -167,10 +167,10 @@ export function ReportsPage() {
 
                     {/* Daily revenue chart */}
                     {dailyChartData.length > 0 && (
-                        <Grid item xs={12} md={8}>
+                        <Grid size={{ xs: 12, md: 8 }}>
                             <Card>
                                 <CardContent>
-                                    <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                         Daily Collections
                                     </Typography>
                                     <ResponsiveContainer width="100%" height={300}>
@@ -189,10 +189,10 @@ export function ReportsPage() {
 
                     {/* Appointments by type pie */}
                     {apptByType.length > 0 && (
-                        <Grid item xs={12} md={4}>
+                        <Grid size={{ xs: 12, md: 4 }}>
                             <Card>
                                 <CardContent>
-                                    <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                         Appointments by Type
                                     </Typography>
                                     <ResponsiveContainer width="100%" height={300}>
@@ -220,10 +220,10 @@ export function ReportsPage() {
                     )}
 
                     {/* Appointment stats */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <Card>
                             <CardContent>
-                                <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                     Appointment Statistics
                                 </Typography>
                                 <Grid container>
@@ -233,7 +233,7 @@ export function ReportsPage() {
                                         { label: 'Cancelled', value: appointmentsQuery.data?.cancelled ?? 0 },
                                         { label: 'No Show', value: appointmentsQuery.data?.noShow ?? 0 },
                                     ].map((item) => (
-                                        <Grid item xs={6} key={item.label}>
+                                        <Grid size={{ xs: 6 }} key={item.label}>
                                             <StatBox label={item.label} value={item.value} />
                                         </Grid>
                                     ))}
@@ -243,21 +243,21 @@ export function ReportsPage() {
                     </Grid>
 
                     {/* Patient stats */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <Card>
                             <CardContent>
-                                <Typography variant="subtitle1" fontWeight={600} mb={2}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                                     Patient Statistics
                                 </Typography>
                                 <Grid container>
-                                    <Grid item xs={6}>
+                                    <Grid size={{ xs: 6 }}>
                                         <StatBox
                                             label="Total Active Patients"
                                             value={patientsQuery.data?.totalPatients ?? 0}
                                             color="primary.main"
                                         />
                                     </Grid>
-                                    <Grid item xs={6}>
+                                    <Grid size={{ xs: 6 }}>
                                         <StatBox
                                             label="New in Period"
                                             value={patientsQuery.data?.newPatients ?? 0}

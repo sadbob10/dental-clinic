@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
     Box, Card, CardContent, Typography, TextField,
-    MenuItem, Divider, Chip, Skeleton, Button
+    MenuItem, Skeleton, Button
 } from '@mui/material'
 import { Add } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
@@ -43,7 +43,7 @@ export function TreatmentListPage() {
             />
 
             {/* Patient selector */}
-            <Box mb={3}>
+            <Box sx={{ mb: 3 }}>
                 <TextField
                     select
                     label="Select Patient"
@@ -75,7 +75,7 @@ export function TreatmentListPage() {
             ) : records?.length === 0 ? (
                 <Card>
                     <CardContent sx={{ textAlign: 'center', py: 6 }}>
-                        <Typography color="text.secondary" mb={2}>
+                        <Typography color="text.secondary" sx={{ mb: 2 }}>
                             No treatment records for this patient
                         </Typography>
                         {canCreate && (
@@ -90,13 +90,20 @@ export function TreatmentListPage() {
                     </CardContent>
                 </Card>
             ) : (
-                <Box display="flex" flexDirection="column" gap={2}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {records?.map((record: TreatmentRecordResponse) => (
                         <Card key={record.id}>
                             <CardContent>
-                                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'flex-start',
+                                        mb: 2,
+                                    }}
+                                >
                                     <Box>
-                                        <Typography variant="subtitle1" fontWeight={600}>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                                             {dayjs(record.createdAt).format('MMMM D, YYYY')}
                                         </Typography>
                                         <Typography variant="caption" color="text.secondary">
@@ -114,7 +121,13 @@ export function TreatmentListPage() {
                                     )}
                                 </Box>
 
-                                <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
+                                <Box
+                                    sx={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '1fr 1fr',
+                                        gap: 2,
+                                    }}
+                                >
                                     {record.diagnosis && (
                                         <Box>
                                             <Typography variant="caption" color="text.secondary">Diagnosis</Typography>

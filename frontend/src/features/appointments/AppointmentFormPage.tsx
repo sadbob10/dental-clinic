@@ -21,8 +21,8 @@ const TYPES: AppointmentType[] = [
 ]
 
 const schema = z.object({
-    patientId: z.number({ required_error: 'Patient is required' }),
-    dentistId: z.number({ required_error: 'Dentist is required' }),
+    patientId: z.number({ error: 'Patient is required' }),
+    dentistId: z.number({ error: 'Dentist is required' }),
     scheduledAt: z.string().min(1, 'Date and time is required'),
     durationMinutes: z.number().min(15, 'Minimum 15 minutes'),
     type: z.enum(['CHECKUP','CLEANING','FILLING','EXTRACTION',
@@ -96,7 +96,7 @@ export function AppointmentFormPage() {
 
             {mutation.isError && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                    {mutation.error instanceof Error ? mutation.error.message : 'Failed to save'}
+                    {mutation.error?.message ?? 'Failed to save'}
                 </Alert>
             )}
 
@@ -104,7 +104,7 @@ export function AppointmentFormPage() {
                 <CardContent>
                     <Box component="form" onSubmit={handleSubmit((d) => mutation.mutate(d))}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <Controller
                                     name="patientId"
                                     control={control}
@@ -125,7 +125,7 @@ export function AppointmentFormPage() {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <Controller
                                     name="dentistId"
                                     control={control}
@@ -144,18 +144,18 @@ export function AppointmentFormPage() {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     label="Date & Time *"
                                     type="datetime-local"
                                     fullWidth
-                                    InputLabelProps={{ shrink: true }}
+                                    slotProps={{ inputLabel: { shrink: true } }}
                                     {...register('scheduledAt')}
                                     error={!!errors.scheduledAt}
                                     helperText={errors.scheduledAt?.message}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid size={{ xs: 12, md: 3 }}>
                                 <Controller
                                     name="durationMinutes"
                                     control={control}
@@ -173,7 +173,7 @@ export function AppointmentFormPage() {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={3}>
+                            <Grid size={{ xs: 12, md: 3 }}>
                                 <Controller
                                     name="type"
                                     control={control}
@@ -186,7 +186,7 @@ export function AppointmentFormPage() {
                                     )}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid size={{ xs: 12 }}>
                                 <TextField
                                     label="Notes"
                                     fullWidth multiline rows={3}
@@ -195,7 +195,7 @@ export function AppointmentFormPage() {
                             </Grid>
                         </Grid>
 
-                        <Box display="flex" gap={2} justifyContent="flex-end" mt={3}>
+                        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
                             <Button onClick={() => navigate(-1)} disabled={mutation.isPending}>
                                 Cancel
                             </Button>
