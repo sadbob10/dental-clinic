@@ -212,8 +212,8 @@ See `.env.example` for full list.
 Key variables:
 | Variable | Required | Description |
 |---|---|---|
-| JWT_SECRET | ✅ Yes | Min 64 chars, random |
-| DB_PASSWORD | ✅ Yes | Postgres password |
+| JWT_SECRET |  Yes | Min 64 chars, random |
+| DB_PASSWORD |  Yes | Postgres password |
 | MAIL_USERNAME | For email | Mailtrap/SMTP username |
 | MAIL_PASSWORD | For email | Mailtrap/SMTP password |
 
@@ -235,7 +235,7 @@ Created automatically on first run:
 - **Email:** admin@dentalclinic.com
 - **Password:** Set via `V3__fix_admin_password.sql` migration
 
-⚠️ Change the admin password immediately after first login.
+Change the admin password immediately after first login.
 
 ---
 

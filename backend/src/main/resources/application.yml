@@ -56,6 +56,12 @@ notification:
   from-name: ${FROM_NAME:Dental Clinic}
   enabled: ${NOTIFICATIONS_ENABLED:true}
 
+cors:
+  allowed-origins:
+    - http://localhost:5050
+    - http://localhost:3000
+    - http://localhost:80
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
